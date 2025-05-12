@@ -8,10 +8,17 @@ data "aws_ssoadmin_instances" "management" {
   provider = aws.management
 }
 
+module "assert_instances" {
+  source        = "Invicton-Labs/assertion/null"
+  version       = "~>0.2.7"
+  condition     = length(data.aws_ssoadmin_instances.management.arns) > 0
+  error_message = "No SSO instances found under the management provider."
+}
+
 locals {
   delegate_account_id = data.aws_caller_identity.delegate.account_id
   instance_id         = tolist(data.aws_ssoadmin_instances.management.identity_store_ids)[0]
-  instance_arn        = tolist(data.aws_ssoadmin_instances.management.arns)[0]
+  instance_arn        = module.assert_instances.checked ? tolist(data.aws_ssoadmin_instances.management.arns)[0] : null
   assume_role_arn     = "arn:aws:iam::${var.management_account_id}:role/sso-delegation/sso-delegation-${local.delegate_account_id}"
 }
 

@@ -1,6 +1,13 @@
 // Get the SSO instances
 data "aws_ssoadmin_instances" "this" {}
 
+module "assert_instances" {
+  source        = "Invicton-Labs/assertion/null"
+  version       = "~>0.2.7"
+  condition     = length(data.aws_ssoadmin_instances.this.arns) > 0
+  error_message = "No SSO instances found. Either SSO isn't managed by this account, or the wrong AWS provider is being used."
+}
+
 data "aws_caller_identity" "this" {}
 
 // Allow the delegated account to assume the role
@@ -285,7 +292,7 @@ data "aws_iam_policy_document" "management" {
 }
 
 resource "aws_iam_role" "delegate" {
-  name                 = "sso-delegation-${var.delegate_account_id}"
+  name                 = module.assert_instances.checked ? "sso-delegation-${var.delegate_account_id}" : null
   path                 = "/sso-delegation/"
   assume_role_policy   = data.aws_iam_policy_document.delegated_assume.json
   max_session_duration = var.max_session_duration
