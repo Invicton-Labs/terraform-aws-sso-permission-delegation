@@ -16,10 +16,11 @@ module "assert_instances" {
 }
 
 locals {
-  delegate_account_id = data.aws_caller_identity.delegate.account_id
-  instance_id         = tolist(data.aws_ssoadmin_instances.management.identity_store_ids)[0]
-  instance_arn        = module.assert_instances.checked ? tolist(data.aws_ssoadmin_instances.management.arns)[0] : null
-  assume_role_arn     = "arn:aws:iam::${var.management_account_id}:role/sso-delegation/sso-delegation-${local.delegate_account_id}"
+  delegate_account_id   = data.aws_caller_identity.delegate.account_id
+  instance_id           = tolist(data.aws_ssoadmin_instances.management.identity_store_ids)[0]
+  instance_arn          = module.assert_instances.checked ? tolist(data.aws_ssoadmin_instances.management.arns)[0] : null
+  assume_role_arn_read  = "arn:aws:iam::${var.management_account_id}:role/sso-delegation/sso-delegation-${local.delegate_account_id}-read"
+  assume_role_arn_write = "arn:aws:iam::${var.management_account_id}:role/sso-delegation/sso-delegation-${local.delegate_account_id}-write"
 }
 
 resource "aws_ssoadmin_permission_set" "this" {
