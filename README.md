@@ -43,7 +43,7 @@ provider "aws" {
   assume_role {
     // Assume the role as specified by the module below.
     // Yes, we can do this circular thing, it works fine.
-    role_arn = module.delegated_sso_delegate.assume_role_arn
+    role_arn = module.delegated_sso_delegate.assume_role_arn_write
   }
 }
 
