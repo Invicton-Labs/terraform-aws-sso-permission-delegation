@@ -14,7 +14,7 @@ This is the configuration for the AWS account that manages IAM Identity Center.
 ```
 module "delegated_sso_management" {
   // Note that double slash in the path to the sub-module
-  source = "Invicton-Labs/aws-sso-permission-delegation/terraform//management"
+  source = "Invicton-Labs/aws-sso-permission-delegation/terraform//modules/management"
   // The ID of the account that you want to allow to manage SSO permissions for itself
   delegate_account_id = "222222222222"
   // Whether the delegate account should be able to look up user and group IDs in the identity store
@@ -49,7 +49,7 @@ provider "aws" {
 
 module "delegated_sso_delegate" {
   // Note that double slash in the path to the sub-module
-  source = "Invicton-Labs/aws-sso-permission-delegation/terraform//delegate"
+  source = "Invicton-Labs/aws-sso-permission-delegation/terraform//modules/delegate"
   providers = {
     aws.delegate   = aws.delegate
     aws.management = aws.management
